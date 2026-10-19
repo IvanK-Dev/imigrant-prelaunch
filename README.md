@@ -29,6 +29,12 @@ docker build --build-arg SITE_ORIGIN=https://real-domain.pl -t imigrant-prelaunc
 docker run --rm -p 8080:80 imigrant-prelaunch
 ```
 
+## GitHub Pages
+
+Workflow `.github/workflows/deploy-pages.yml` собирает и публикует сайт при каждом push в `main`. `SITE_ORIGIN` и подпуть репозитория берутся из конфигурации GitHub Pages автоматически, поэтому canonical, sitemap, языковые ссылки и ресурсы работают как с адресом `https://ivank-dev.github.io/imigrant-prelaunch/`, так и с будущим custom domain.
+
+После первого push откройте в GitHub **Settings → Pages → Build and deployment** и выберите **Source: GitHub Actions**. Затем запустите workflow **Deploy to GitHub Pages** в разделе **Actions**, если он не стартовал автоматически. Публичный адрес без custom domain: `https://ivank-dev.github.io/imigrant-prelaunch/`.
+
 ## Coolify
 
 1. Создайте новый **Application** в Coolify. Не используйте репозиторий полного Imigrant.
