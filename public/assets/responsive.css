@@ -1,0 +1,28 @@
+@media (min-width: 681px) and (max-width: 960px) {
+  .header-inner { grid-template-columns: 1fr auto; }
+  .menu-button {
+    display: grid;
+    width: 42px;
+    height: 42px;
+    padding: 10px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--accent);
+    gap: 5px;
+  }
+  .menu-button span { height: 2px; border-radius: 2px; background: #fff; }
+  .mobile-nav {
+    position: absolute;
+    top: 76px;
+    right: 0;
+    width: min(280px, calc(100vw - 24px));
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    background: #fff;
+    box-shadow: 0 18px 42px rgb(var(--shadow) / .2);
+    flex-direction: column;
+  }
+  .mobile-nav.is-open { display: flex; }
+  .mobile-nav a { padding: 11px 12px; border-radius: 8px; text-decoration: none; font-weight: 750; }
+}
