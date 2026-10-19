@@ -31,7 +31,7 @@ const locales = {
     aboutKicker: 'Про компанію', aboutTitle: 'Підтримка у важливих формальностях',
     aboutText: 'Imigrant Olga Kalyniak допомагає іноземцям зорієнтуватися у питаннях легалізації перебування та пов’язаних адміністративних процедурах у Польщі. Ми пояснюємо наступні кроки зрозуміло та супроводжуємо клієнтів у межах обраної послуги.',
     aboutPoints: ['Зрозуміла комунікація', 'Увага до вашої ситуації', 'Підтримка українською, польською та англійською'],
-    contactsTitle: 'Контакти', contactsText: 'Напишіть нам, щоб обговорити вашу ситуацію та потрібну послугу.', emailLabel: 'Контактний email',
+    contactsTitle: 'Контакти', contactsText: 'Зателефонуйте або напишіть нам, щоб обговорити вашу ситуацію та потрібну послугу.', emailLabel: 'Контактний email', phoneLabel: 'Телефон', cityLabel: 'Місто',
     privacyLabel: 'Політика конфіденційності / RODO', rights: 'Всі права захищені.', skip: 'Перейти до основного вмісту'
   },
   pl: {
@@ -45,7 +45,7 @@ const locales = {
     aboutKicker: 'O firmie', aboutTitle: 'Wsparcie w ważnych formalnościach',
     aboutText: 'Imigrant Olga Kalyniak pomaga cudzoziemcom odnaleźć się w sprawach legalizacji pobytu i związanych z nimi procedurach administracyjnych w Polsce. Jasno wyjaśniamy kolejne kroki i wspieramy klientów w zakresie wybranej usługi.',
     aboutPoints: ['Jasna komunikacja', 'Uważne podejście do Twojej sytuacji', 'Wsparcie po ukraińsku, polsku i angielsku'],
-    contactsTitle: 'Kontakt', contactsText: 'Napisz do nas, aby omówić swoją sytuację i potrzebną usługę.', emailLabel: 'Email kontaktowy',
+    contactsTitle: 'Kontakt', contactsText: 'Zadzwoń lub napisz do nas, aby omówić swoją sytuację i potrzebną usługę.', emailLabel: 'Email kontaktowy', phoneLabel: 'Telefon', cityLabel: 'Miasto',
     privacyLabel: 'Polityka prywatności / RODO', rights: 'Wszelkie prawa zastrzeżone.', skip: 'Przejdź do głównej treści'
   },
   en: {
@@ -59,7 +59,7 @@ const locales = {
     aboutKicker: 'About us', aboutTitle: 'Support with important formalities',
     aboutText: 'Imigrant Olga Kalyniak helps foreigners navigate residence legalization and related administrative procedures in Poland. We explain the next steps clearly and support clients within the scope of their chosen service.',
     aboutPoints: ['Clear communication', 'Attention to your individual situation', 'Support in Ukrainian, Polish, and English'],
-    contactsTitle: 'Contact', contactsText: 'Email us to discuss your situation and the service you need.', emailLabel: 'Contact email',
+    contactsTitle: 'Contact', contactsText: 'Call or email us to discuss your situation and the service you need.', emailLabel: 'Contact email', phoneLabel: 'Phone', cityLabel: 'City',
     privacyLabel: 'Privacy Policy / RODO', rights: 'All rights reserved.', skip: 'Skip to main content'
   }
 }
@@ -124,12 +124,14 @@ function page(code, t) {
   const phoneHref = site.phone ? `tel:${site.phone.replace(/[^+\d]/g, '')}` : null
   const contactDetails = [
     `<article class="contact-card"><span>${esc(t.emailLabel)}</span><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></article>`,
-    site.phone ? `<article class="contact-card"><span>${esc(t.call)}</span><a href="${phoneHref}">${esc(site.phone)}</a></article>` : '',
+    site.phone ? `<article class="contact-card"><span>${esc(t.phoneLabel)}</span><a href="${phoneHref}">${esc(site.phone)}</a></article>` : '',
+    site.city ? `<article class="contact-card"><span>${esc(t.cityLabel)}</span><p>${esc(site.city)}</p></article>` : '',
     site.address ? `<article class="contact-card"><span>${esc(code === 'pl' ? 'Adres' : code === 'en' ? 'Address' : 'Адреса')}</span><p>${esc(site.address)}</p></article>` : '',
     site.workingHours?.[code] ? `<article class="contact-card"><span>${esc(code === 'pl' ? 'Godziny pracy' : code === 'en' ? 'Opening hours' : 'Графік роботи')}</span><p>${esc(site.workingHours[code])}</p></article>` : ''
   ].filter(Boolean).join('')
   const schema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: site.businessName, url, email: site.email, image: `${origin}/assets/hero.webp`, areaServed: { '@type': 'Country', name: 'Poland' } }
   if (site.phone) schema.telephone = site.phone
+  if (site.city) schema.address = { '@type': 'PostalAddress', addressLocality: site.city.split(',')[0].trim(), addressCountry: 'PL' }
   if (site.address) schema.address = { '@type': 'PostalAddress', streetAddress: site.address, addressCountry: 'PL' }
 
   return `<!doctype html>
@@ -149,20 +151,21 @@ function page(code, t) {
   <header class="header"><div class="shell header-inner">
     <a class="brand" href="${publicPath(`/${code}/`)}" aria-label="${esc(site.businessName)}"><img src="${publicPath('/assets/logo.png')}" width="683" height="666" alt=""><span>Imigrant<small>Olga Kalyniak</small></span></a>
     <nav class="desktop-nav" aria-label="${esc(t.nav[0])}"><a href="#home">${esc(t.nav[0])}</a><a href="#services">${esc(t.nav[1])}</a><a href="#about">${esc(t.nav[2])}</a><a href="#contact">${esc(t.nav[3])}</a></nav>
-    <div class="header-actions"><div class="languages" aria-label="Language">${Object.keys(locales).map((locale) => `<a ${locale === code ? 'aria-current="page"' : ''} href="${publicPath(`/${locale}/`)}">${locale.toUpperCase()}</a>`).join('')}</div>${phoneHref ? `<a class="button button-small" href="${phoneHref}">${esc(t.call)}</a>` : ''}<button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="${esc(t.menu)}"><span></span><span></span><span></span></button></div>
+    <div class="header-actions"><div class="languages" aria-label="Language">${Object.keys(locales).map((locale) => `<a ${locale === code ? 'aria-current="page"' : ''} href="${publicPath(`/${locale}/`)}">${locale.toUpperCase()}</a>`).join('')}</div>${phoneHref ? `<a class="header-call" href="${phoneHref}" aria-label="${esc(`${t.call}: ${site.phone}`)}"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6.6 2.8 9.2 7a1.6 1.6 0 0 1-.2 1.9l-1.2 1.2a14.7 14.7 0 0 0 6.1 6.1l1.2-1.2a1.6 1.6 0 0 1 1.9-.2l4.2 2.6a1.6 1.6 0 0 1 .7 1.7l-.4 2a2 2 0 0 1-2 1.6C9.5 22.7 1.3 14.5 1.3 4.5a2 2 0 0 1 1.6-2l2-.4a1.6 1.6 0 0 1 1.7.7Z" fill="currentColor"/></svg><span>${esc(t.call)}</span></a>` : ''}<button class="menu-button" type="button" aria-expanded="false" aria-controls="mobile-nav" aria-label="${esc(t.menu)}"><span></span><span></span><span></span></button></div>
     <nav class="mobile-nav" id="mobile-nav" aria-label="${esc(t.menu)}"><a href="#services">${esc(t.nav[1])}</a><a href="#about">${esc(t.nav[2])}</a><a href="#contact">${esc(t.nav[3])}</a></nav>
   </div></header>
   <main id="main"><section class="hero" id="home"><img class="hero-image" src="${publicPath('/assets/hero.webp')}" width="1586" height="992" alt="" fetchpriority="high"><div class="hero-shade"></div><div class="shell hero-content"><p class="eyebrow">Imigrant Olga Kalyniak</p><h1>${esc(t.heroTitle)}</h1><p>${esc(t.heroText)}</p><div class="hero-actions">${phoneHref ? `<a class="button" href="${phoneHref}">${esc(t.call)}</a>` : ''}<a class="button button-light" href="mailto:${esc(site.email)}">${esc(t.email)}</a></div></div></section>
   <section class="section" id="services"><div class="shell"><div class="section-heading"><p class="eyebrow">Imigrant</p><h2>${esc(t.servicesTitle)}</h2><p>${esc(t.servicesIntro)}</p></div><div class="services">${t.services.map((service, index) => `<article class="service"><img src="${publicPath(`/assets/icons/${icons[index]}`)}" width="48" height="48" alt=""><span>${String(index + 1).padStart(2, '0')}</span><h3>${esc(service)}</h3></article>`).join('')}</div></div></section>
   <section class="section section-warm" id="about"><div class="shell about"><div class="about-photo"><img src="${publicPath('/assets/about.webp')}" width="1122" height="1402" loading="lazy" alt=""></div><div class="about-copy"><p class="eyebrow">${esc(t.aboutKicker)}</p><h2>${esc(t.aboutTitle)}</h2><p>${esc(t.aboutText)}</p><ul>${t.aboutPoints.map((point) => `<li>${esc(point)}</li>`).join('')}</ul></div></div></section>
   <section class="section contact" id="contact"><div class="shell"><div class="contact-intro"><p class="eyebrow">Imigrant Olga Kalyniak</p><h2>${esc(t.contactsTitle)}</h2><p>${esc(t.contactsText)}</p></div><div class="contact-grid">${contactDetails}</div></div></section></main>
-  <footer><div class="shell footer-inner"><div><strong>Imigrant Olga Kalyniak</strong><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></div><div class="footer-links"><a href="${publicPath(`/${code}/privacy/`)}">${esc(t.privacyLabel)}</a><div class="footer-languages">${Object.keys(locales).map((locale) => `<a href="${publicPath(`/${locale}/`)}">${locale.toUpperCase()}</a>`).join('')}</div></div><p>© ${new Date().getFullYear()} ${esc(site.businessName)}. ${esc(t.rights)}</p></div></footer>
+  <footer><div class="shell footer-inner"><div><strong>Imigrant Olga Kalyniak</strong><a href="mailto:${esc(site.email)}">${esc(site.email)}</a>${phoneHref ? `<a href="${phoneHref}">${esc(site.phone)}</a>` : ''}</div><div class="footer-links"><a href="${publicPath(`/${code}/privacy/`)}">${esc(t.privacyLabel)}</a><div class="footer-languages">${Object.keys(locales).map((locale) => `<a href="${publicPath(`/${locale}/`)}">${locale.toUpperCase()}</a>`).join('')}</div></div><p>© ${new Date().getFullYear()} ${esc(site.businessName)}. ${esc(t.rights)}</p></div></footer>
   <script src="${publicPath('/assets/app.js')}" defer></script>
 </body></html>`
 }
 
 function privacyPage(code, t, policy) {
   const url = `${origin}/${code}/privacy/`
+  const phoneHref = site.phone ? `tel:${site.phone.replace(/[^+\d]/g, '')}` : null
   const alternates = Object.keys(locales).map((locale) => `<link rel="alternate" hreflang="${locale}" href="${origin}/${locale}/privacy/">`).join('\n    ')
   const content = policy.sections.map(([heading, paragraphs]) => `<section><h2>${esc(heading)}</h2>${paragraphs.map((paragraph, index) => {
     const linked = heading.startsWith('7.') && index === paragraphs.length - 1
@@ -181,7 +184,7 @@ function privacyPage(code, t, policy) {
   <a class="skip-link" href="#main">${esc(t.skip)}</a>
   <header class="privacy-header"><div class="shell privacy-header-inner"><a class="brand" href="${publicPath(`/${code}/`)}" aria-label="${esc(site.businessName)}"><img src="${publicPath('/assets/logo.png')}" width="683" height="666" alt=""><span>Imigrant<small>Olga Kalyniak</small></span></a><div class="languages" aria-label="Language">${Object.keys(locales).map((locale) => `<a ${locale === code ? 'aria-current="page"' : ''} href="${publicPath(`/${locale}/privacy/`)}">${locale.toUpperCase()}</a>`).join('')}</div></div></header>
   <main class="privacy-main shell" id="main"><a class="privacy-back" href="${publicPath(`/${code}/`)}">← ${esc(policy.back)}</a><article class="privacy-article"><p class="eyebrow">RODO / GDPR</p><h1>${esc(policy.title)}</h1><p class="privacy-updated">${esc(policy.updated)}</p><p class="privacy-intro">${esc(policy.intro)}</p>${content}<aside><strong>${esc(t.emailLabel)}:</strong> <a href="mailto:${esc(site.email)}">${esc(site.email)}</a></aside></article></main>
-  <footer><div class="shell footer-inner"><div><strong>Imigrant Olga Kalyniak</strong><a href="mailto:${esc(site.email)}">${esc(site.email)}</a></div><div class="footer-languages">${Object.keys(locales).map((locale) => `<a href="${publicPath(`/${locale}/privacy/`)}">${locale.toUpperCase()}</a>`).join('')}</div><p>© ${new Date().getFullYear()} ${esc(site.businessName)}. ${esc(t.rights)}</p></div></footer>
+  <footer><div class="shell footer-inner"><div><strong>Imigrant Olga Kalyniak</strong><a href="mailto:${esc(site.email)}">${esc(site.email)}</a>${phoneHref ? `<a href="${phoneHref}">${esc(site.phone)}</a>` : ''}</div><div class="footer-languages">${Object.keys(locales).map((locale) => `<a href="${publicPath(`/${locale}/privacy/`)}">${locale.toUpperCase()}</a>`).join('')}</div><p>© ${new Date().getFullYear()} ${esc(site.businessName)}. ${esc(t.rights)}</p></div></footer>
 </body></html>`
 }
 

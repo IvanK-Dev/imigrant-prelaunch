@@ -18,7 +18,7 @@ const allText = (await Promise.all(files.filter((file) => /\.(html|xml|txt|css|j
 
 for (const locale of expected) {
   const html = await readFile(new URL(`${locale}/index.html`, root), 'utf8')
-  for (const marker of [`lang="${locale}"`, '<title>', 'rel="canonical"', 'hreflang=', 'application/ld+json', 'mailto:imigrant.legnica@gmail.com']) {
+  for (const marker of [`lang="${locale}"`, '<title>', 'rel="canonical"', 'hreflang=', 'application/ld+json', 'mailto:imigrant.legnica@gmail.com', 'tel:+48791795857', '+48 791 795 857', 'Legnica, Polska']) {
     if (!html.includes(marker)) failures.push(`${locale}: missing ${marker}`)
   }
   const privacy = await readFile(new URL(`${locale}/privacy/index.html`, root), 'utf8')
@@ -26,7 +26,7 @@ for (const locale of expected) {
     if (!privacy.includes(marker) && !(locale !== 'en' && marker === 'Article 6')) failures.push(`${locale}/privacy: missing ${marker}`)
   }
 }
-for (const forbidden of ['Lorem ipsum', 'awork3302@gmail.com', '.env.local', 'AggregateRating']) {
+for (const forbidden of ['Lorem ipsum', 'awork3302@gmail.com', '.env.local', 'AggregateRating', 'Pocztowa 7/42', '59-220 Legnica', 'streetAddress', 'href=""']) {
   if (allText.includes(forbidden)) failures.push(`forbidden text found: ${forbidden}`)
 }
 for (const required of ['robots.txt', 'sitemap.xml', 'assets/styles.css', 'assets/privacy.css', 'assets/app.js', 'assets/hero.webp', 'assets/logo.png']) {
