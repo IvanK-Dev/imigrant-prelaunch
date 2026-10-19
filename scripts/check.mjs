@@ -21,11 +21,15 @@ for (const locale of expected) {
   for (const marker of [`lang="${locale}"`, '<title>', 'rel="canonical"', 'hreflang=', 'application/ld+json', 'mailto:imigrant.legnica@gmail.com']) {
     if (!html.includes(marker)) failures.push(`${locale}: missing ${marker}`)
   }
+  const privacy = await readFile(new URL(`${locale}/privacy/index.html`, root), 'utf8')
+  for (const marker of [`lang="${locale}"`, 'RODO', 'Article 6', 'uodo.gov.pl', 'mailto:imigrant.legnica@gmail.com']) {
+    if (!privacy.includes(marker) && !(locale !== 'en' && marker === 'Article 6')) failures.push(`${locale}/privacy: missing ${marker}`)
+  }
 }
 for (const forbidden of ['Lorem ipsum', 'awork3302@gmail.com', '.env.local', 'AggregateRating']) {
   if (allText.includes(forbidden)) failures.push(`forbidden text found: ${forbidden}`)
 }
-for (const required of ['robots.txt', 'sitemap.xml', 'assets/styles.css', 'assets/app.js', 'assets/hero.webp', 'assets/logo.png']) {
+for (const required of ['robots.txt', 'sitemap.xml', 'assets/styles.css', 'assets/privacy.css', 'assets/app.js', 'assets/hero.webp', 'assets/logo.png']) {
   if (!files.includes(required)) failures.push(`missing file: ${required}`)
 }
 if (failures.length) {

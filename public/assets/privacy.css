@@ -1,0 +1,25 @@
+.privacy-page { background: var(--paper); }
+.privacy-header { padding: 16px 0; border-bottom: 1px solid var(--border); background: #fff; }
+.privacy-header-inner { display: flex; align-items: center; justify-content: space-between; }
+.privacy-main { padding-top: 44px; padding-bottom: 90px; }
+.privacy-back { display: inline-flex; margin-bottom: 30px; color: var(--accent-dark); font-weight: 800; text-decoration: none; }
+.privacy-back:hover { text-decoration: underline; text-underline-offset: 4px; }
+.privacy-article { max-width: 850px; padding: clamp(28px, 5vw, 64px); border: 1px solid var(--border); border-radius: 24px; background: #fff; box-shadow: 0 16px 44px rgb(var(--shadow) / .09); }
+.privacy-article h1 { max-width: 720px; margin: 0; font-size: clamp(38px, 6vw, 62px); line-height: 1.02; letter-spacing: -.045em; }
+.privacy-updated { margin: 16px 0 0; color: var(--muted); font-size: 13px; }
+.privacy-intro { margin: 30px 0 42px; padding: 20px 24px; border-left: 4px solid var(--accent); border-radius: 0 12px 12px 0; background: var(--warm); font-size: 18px; font-weight: 650; }
+.privacy-article section { margin-top: 34px; }
+.privacy-article h2 { margin: 0 0 12px; font-size: clamp(23px, 3vw, 30px); line-height: 1.2; }
+.privacy-article section p { margin: 10px 0; color: #48546a; }
+.privacy-article section a, .privacy-article aside a { color: var(--accent-dark); font-weight: 750; overflow-wrap: anywhere; }
+.privacy-article aside { margin-top: 42px; padding: 20px 24px; border-radius: 14px; background: var(--ink); color: #fff; }
+.footer-links { display: flex; align-items: center; gap: 28px; }
+.footer-links > a { font-weight: 750; }
+@media (max-width: 680px) {
+  .privacy-header .brand span { display: block; }
+  .privacy-main { padding-top: 26px; padding-bottom: 60px; }
+  .privacy-back { margin-bottom: 20px; }
+  .privacy-article { padding: 28px 20px; border-radius: 18px; }
+  .privacy-intro { margin: 24px 0 34px; padding: 16px 18px; font-size: 16px; }
+  .footer-links { align-items: flex-start; flex-direction: column; gap: 14px; }
+}
